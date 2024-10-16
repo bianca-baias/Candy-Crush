@@ -164,4 +164,4 @@ def check_random_matrix(matrix):
             # If the function returned False, it means we don't have any line that we could crush
             flag = False
     
-    return score
+    return score, matrix
