@@ -1,5 +1,5 @@
 import random
-import utils
+import play
 
 
 def create_matrix(size):
@@ -16,48 +16,57 @@ def create_matrix(size):
     return matrix
 
 
-def prepare_matrix(dimension):
+def prepare_matrix(dimension, fig):
     """
     Create a new matrix and crush all the possible lines. Return a matrix without any figures, ready to be played.
     """
     score = 0
     matrix = create_matrix(dimension)
     
-    show_matrix(matrix)
+    play.show_matrix(matrix)
     
     # Check if we already have some figure line/L/T in the matrix newly created
-    extra_score, new_matrix =  utils.check_random_matrix(matrix)
+    extra_score, new_matrix =  play.check_random_matrix(matrix, score)
     score += extra_score
     matrix = new_matrix[:]
     return score, matrix
 
-
-def show_matrix(matrix):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            print(matrix[i][j], end="    ")
-        print("\n")
 
 
 def main():
     dimension = 6
     games = 1
     score = 0
+    #figures = [['line', 5], ['L'], ['T'], ['line', 4], ['line', 3]]
+    figures = [['line', 5], ['line', 4], ['line', 3]]
     
     for game in range(games):
-        extra_score, matrix = prepare_matrix(dimension)
+        # Create and check matrix for initial figures
+        extra_score, matrix = prepare_matrix(dimension, ['line'])
         score += extra_score
         print(score)
         # Now we can begin the game
-        
-        """
+
+        print("STARTING GAME")
+        run = True
         while run:
-            
+            round = play.PlayGame(score)
             # Play the game
-            utils.check_lines(matrix)
+            try:
+                
+                # Try to find a figure
+                run, new_score, new_matrix = round.start(matrix)
+                matrix = new_matrix[:]
+                score = new_score
+                
+                if score >= 10000:
+                    run = False
+                    print(f"Game nr. {game}: score")
             
-            run = False
-        """
+            except:
+                # If we did not find a figure, game over
+                run = False
+                print(f"Game nr. {game}: no possible move, score {score}")
 
 
 if __name__ == "__main__":
