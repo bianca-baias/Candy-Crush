@@ -37,6 +37,7 @@ def main():
     dimension = 6
     games = 1
     score = 0
+    counter = 0
     #figures = [['line', 5], ['L'], ['T'], ['line', 4], ['line', 3]]
     figures = [['line', 5], ['line', 4], ['line', 3]]
     
@@ -50,21 +51,23 @@ def main():
         print("STARTING GAME")
         run = True
         while run:
+            print("NEW ROUND")
             round = play.PlayGame(score)
             # Play the game
             try:
-                
                 # Try to find a figure
-                run, new_score, new_matrix = round.start(matrix)
+                run, new_score, new_matrix, new_counter = round.start(matrix)
                 matrix = new_matrix[:]
                 score = new_score
+                counter += new_counter
                 
-                if score >= 10000:
+                if counter >= 10000:
                     run = False
-                    print(f"Game nr. {game}: score")
+                    print(f"No more moves allowed -game nr. {game}: {score}")
             
-            except:
+            except Exception as e:
                 # If we did not find a figure, game over
+                print(e)
                 run = False
                 print(f"Game nr. {game}: no possible move, score {score}")
 
