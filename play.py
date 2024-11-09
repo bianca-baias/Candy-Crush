@@ -5,10 +5,6 @@ class CheckLine:
     Class that encapsulates the methods used for line detection.
     """
     
-    def __init__(self):
-        pass
-    
-    
     def check_horizontal(self, matrix, line_size):
         flag = False
         
@@ -22,9 +18,7 @@ class CheckLine:
                     flag = True
                     return (i, j)
         
-        if not flag:
-            #print(f"Could not find {line_size} candies to match horizontally...")
-            return flag
+        return flag
     
         
     def check_vertical(self, matrix, line_size):
@@ -36,39 +30,227 @@ class CheckLine:
                 # Take the line_size (3, 4 or 5) elements from the current position
                 my_line = [matrix[x][i] for x in range(j, j + line_size)]
                 if my_line.count(my_line[0]) == len(my_line):
-                    #print(f"Matching {line_size} vertical at position: line {j+1}, column {i+1} and the next {line_size - 1}")
                     flag = True
                     return (j, i)
         
-        if not flag:
-            #print(f"Could not find {line_size} candies to match vertically...")
-            return flag
+        return flag
 
 
+    def check_line_3(self, matrix):
+        """
+        """
+        directions = [["vertical", "down"], ["vertical", "up"], ["horizontal", "left"], ["horizontal", "right"]]
+        flag = False
+        length = 3
+        
+        for row in range(len(matrix)):
+            for column in range(len(matrix)):
+                positions = (row, column)
+                for direction in directions:
+                    ##########################################################################################
+                    if direction[1]== "right":
+                        
+                        # Check if there is a horizontal line forming to the right
+                        if column < (len(matrix[0]) - length):
+                            #print("Checking right")
+                            if matrix[row][column] == matrix[row][column+2]==matrix[row][column+3]:
+                                flag = True
+                                break
+                        
+                        if column < len(matrix[0]) - 1:
+                            if row <= (len(matrix) - length):
+                                #print("Checking right-down")
+                                # Check if there is a vertical line forming down
+                                if matrix[row][column] == matrix[row+1][column+1] == matrix[row+2][column+1]:
+                                    flag = True
+                                    break
+                            
+                            # Check if there is a vertical line forming up
+                            if row >= length - 1:
+                                #print("Checking right-up")
+                                if matrix[row][column] == matrix[row-1][column+1] == matrix[row-2][column+1]:
+                                    flag = True
+                                    break
+                            
+                            if row in range(1, len(matrix)-1) and matrix[row][column] == matrix[row-1][column+1] == matrix[row+1][column+1]:
+                                flag = True
+                                break
+                    
+                    ##########################################################################################
+                    elif direction[1] == "left":
+                        # Check if there is a horizontal line forming left
+                        if column >= length:
+                            #print("Checking left")
+                            if matrix[row][column] == matrix[row][column-2]==matrix[row][column-3]:
+                                flag = True
+                                break
+                        
+                        if column > 0:
+                            if row <= (len(matrix) - length):
+                                #print("Checking left down")
+                                if matrix[row][column] == matrix[row+1][column-1]==matrix[row+2][column-1]:
+                                    flag = True
+                                    break
+                                
+                            # Check if there is a vertical line forming up
+                            if row >= length - 1:
+                                #print("Checking left up")
+                                if matrix[row][column] == matrix[row-1][column-1]==matrix[row-2][column-1]:
+                                    flag = True
+                                    break
+                            
+                            if row in range(1, len(matrix)) and matrix[row][column] == matrix[row-1][column-1] == matrix[row+1][column-1]:
+                                flag = True
+                                break
+                    ##########################################################################################
+                    elif direction[1] == "down":
+                        if row <= (len(matrix) - length - 1):
+                            #print("Checking down")
+                            if matrix[row][column] == matrix[row+2][column]==matrix[row+3][column]:
+                                flag = True
+                                break
+                        
+                        if row < len(matrix) - 1:
+                            if column >= length - 1:
+                                #print("Checking down left")
+                                if matrix[row][column] == matrix[row+1][column-1]==matrix[row+1][column-2]:
+                                    flag = True
+                                    break
+                                
+                            if column <= len(matrix[0]) - length:
+                                #print("Checking down right")
+                                if matrix[row][column] == matrix[row+1][column+1]==matrix[row+1][column+2]:
+                                    flag = True
+                                    break
+                        
+                            if column in range(1, len(matrix)-1) and matrix[row][column] == matrix[row+1][column - 1] == matrix[row+1][column+1]:
+                                    flag = True
+                                    break
+                    ##########################################################################################
+                    elif direction[1]  == "up":
+                        if row >= length:
+                            #print("Checking up")
+                            if matrix[row][column] == matrix[row-2][column]==matrix[row-3][column]:
+                                flag = True
+                                break
+                        
+                        if row > 0:
+                            if column >= length - 1:
+                                #print("Checking up-left")
+                                if matrix[row][column] == matrix[row-1][column-1]==matrix[row-1][column-2]:
+                                    flag = True
+                                    break
+                                
+                            if column <= len(matrix[0]) - length:
+                                #print("Checking up-right")
+                                if matrix[row][column] == matrix[row-1][column+1]==matrix[row-1][column+2]:
+                                    flag = True
+                                    break
+                            
+                            if column in range(1, len(matrix)-1) and matrix[row][column] == matrix[row-1][column-1] == matrix[row-1][column+1]:
+                                flag = True
+                                break
+                if flag:
+                    return direction, positions
+        
+        return False, None
+    
+    
+    def check_line_4(self, matrix):
+        """
+        
+        """
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if i < len(matrix)-3:
+                    # check if there is a column of 4 elements possible
+                    if matrix[i][j]==matrix[i+1][j] == matrix[i+3][j]:
+                        if j < len(matrix)-1:
+                            if matrix[i][j] == matrix[i+2][j+1]:
+                                return ["horizontal","left"], (i+2, j+1) 
+                        
+                        if j > 0:
+                            if matrix[i][j] == matrix[i+2][j-1]:
+                                return ["horizontal","right"], (i+2, j-1)
+                    
+                    if matrix[i][j] == matrix[i+2][j] == matrix[i+3][j]:
+                        if j< len(matrix)-1:
+                            if matrix[i][j] == matrix[i+1][j+1]:
+                                return ["horizontal","left"], (i+1, j+1) 
+                        
+                        if j > 0:
+                            if matrix[i][j] == matrix[i+1][j-1]:
+                                return ["horizontal","right"], (i+1, j-1)
+                
+                # check if there is a line of 4 elements possible
+                if j < len(matrix)-3:
+                    if matrix[i][j] == matrix[i][j+1] == matrix[i][j+3]:
+                        if i > 0:
+                            if matrix[i][j] == matrix[i-1][j+2]:
+                                return ["vertical", "down"], (i-1, j+2)
+                            
+                        if i < len(matrix)-1:
+                            if matrix[i][j] == matrix[i+1][j+2]:
+                                return ["vertical", "up"], (i+1, j+2)
+                    
+                    if matrix[i][j] == matrix[i][j+2]== matrix[i][j+3]:
+                        if i > 0:
+                            if matrix[i][j] == matrix[i-1][j+1]:
+                                return ["vertical", "down"], (i-1, j+1)
+                        
+                        if i < len(matrix) - 1:
+                            if matrix[i][j] == matrix[i+1][j+1]:
+                                return ["vertical", "up"], (i+1, j+1)
+                    
+        return False, None
+    
+    
+    def check_line_5(self, matrix):
+        """
+        
+        """
+        for i in range(len(matrix)):
+            for j in range(len(matrix)):
+                # check if there is a column of 5 elements possible
+                if i < len(matrix)-4:
+                    if matrix[i][j]==matrix[i+1][j] == matrix[i+3][j]==matrix[i+4][j]:
+                        if j > 0:
+                            if matrix[i][j]==matrix[i+2][j-1]:
+                                return ["horizontal", "right"], (i+2, j-1)
+                        
+                        if j < len(matrix)-1:
+                            if matrix[i][j]==matrix[i+2][j+1]:
+                                return ["horizontal", "left"], (i+2, j+1)
+                
+                # check if there is a row of 5 elements possible
+                if j < len(matrix)-4:
+                    if matrix[i][j] == matrix[i][j+1] == matrix[i][j+3] == matrix[i][j+4]:
+                        if i > 0:
+                            if matrix[i][j]== matrix[i-1][j+2]:
+                                return ["vertical", "down"], (i-1, j+2)
+                        
+                        if i < len(matrix)-1:
+                            if matrix[i][j]== matrix[i+1][j+2]:
+                                return ["vertical", "up"], (i+1, j+2)
+        
+        return False, None
 #############################################################
 
 class CheckL:
-    def __init__(self, matrix):
-        self.matrix = matrix
-    
-    def check_horizontal():
+    def check_existing():
         pass
     
-    def check_vertical():
+    def check_possible(self, matrix):
         pass
 
 #############################################################
 
 class CheckT:
-    def __init__(self, matrix):
-        self.matrix = matrix
-    
-    def check_horizontal():
+    def check_existing():
         pass
     
-    def check_vertical():
+    def check_possible(self, matrix):
         pass
-
 
 #############################################################
 
@@ -83,7 +265,7 @@ def show_matrix(matrix):
         
 
 
-def add_score(figure, length = 0):
+def add_score(figure, length=0):
     """
     Input:
     -length (int): for the line figure only (3, 4 or 5) or 0 if the figure is not a line
@@ -164,7 +346,7 @@ def check_figures(matrix):
 
 
 
-def check_random_matrix(matrix, score):
+def check_random_matrix(matrix):
     """
     Check a matrix if we have candies to crush, without making a move. Crush the candies untill we no longer have a figure (line/L/T).
     
@@ -173,7 +355,7 @@ def check_random_matrix(matrix, score):
     and
     - the modified matrix
     """
-    
+    score = 0
     flag = True
     
     while flag:
@@ -193,10 +375,9 @@ def check_random_matrix(matrix, score):
 
 
 class PlayGame:
-    def __init__(self, score):
+    def __init__(self):
         #self.figures = [['line', 5], ['L'], ['T'], ['line', 4], ['line', 3]]
         self.figures = [['line']]
-        self.score = score
         
     
     def move_candy(self, matrix, positions, mode, direction):
@@ -226,186 +407,50 @@ class PlayGame:
         return matrix
     
     
-    def check_vertical(self, matrix, true_candy, row, column, length, direction):
-        """
-        """
-        #print(f"Direction: {direction} - row {row}, column {column}, length {length}")
-        if direction == "down":
-            # Check if there is a vertical line forming down
-            my_line = [matrix[x][column] for x in range(row + 1, row + length)]
-            #print(f"Element is: {matrix[true_candy[0]][true_candy[1]]}, and list: {my_line}")
-            if my_line.count(matrix[true_candy[0]][true_candy[1]]) == len(my_line):
-                #print(f"Can move vertical down at position: line {row}, column {column}.")
-                return True
-        else:
-            my_line = [matrix[x][column] for x in range(row-length + 1, row)]
-            #print(f"Element is: {matrix[true_candy[0]][true_candy[1]]}, and list: {my_line}")
-            if my_line.count(matrix[true_candy[0]][true_candy[1]]) == len(my_line):
-                #print(f"Can move vertical down at position: line {row}, column {column}.")
-                return True
+    
+    def check_formations(self, matrix):
+        check_line = CheckLine()
+        check_L = CheckL()
+        check_T = CheckT()
+        
+        print("checking line of 5")
+        direction, position = check_line.check_line_5(matrix)
+        
+        if not direction:
+            print("checking line of 4")
+            direction, position = check_line.check_line_4(matrix)
+        
+        if not direction:
+            print("checking line of 3")
+            direction, position = check_line.check_line_3(matrix) 
+        
+        # if not direction:
+        #     direction, position = check_L.check_possible(matrix)
+        
+        # if not direction:
+        #     direction, position = check_T.check_possible(matrix)    
+        
+        if direction:
+            return direction, position
         
         return False
-    
-    
-    def check_horizontal(self, matrix, true_candy, row, column, length, direction):
-        """
-        """
-        #print(f"Direction: {direction} - row {row}, column {column}, length {length}")
-        if direction == "right":
-            my_line = matrix[row][column + 1 : column + length]
-            #print(f"Element is: {matrix[true_candy[0]][true_candy[1]]}, and list: {my_line}")
-            if my_line.count(matrix[true_candy[0]][true_candy[1]]) == len(my_line):
-                #print(f"Can move horizontal right at position: line {row}, column {column}.")
-                return True
-        else:
-            my_line = matrix[row][column - length + 1 : column]
-            #print(f"Element is: {matrix[true_candy[0]][true_candy[1]]}, and list: {my_line}")
-            if my_line.count(matrix[true_candy[0]][true_candy[1]]) == len(my_line):
-                #print(f"Can move horizontal left at position: line {row}, column {column}.")
-                return True
-        
-        return False
-    
-    
-    
-    def check_formation(self, matrix, figure, positions):
-        """
-        figure[0]=line, figure[1]=3, 4 or 5
-        """
-        directions = [["vertical", "down"], ["vertical", "up"], ["horizontal", "left"], ["horizontal", "right"]]
-        row = positions[0]
-        column = positions[1]
-        length = figure[1]
-        flag = False
-        
-        for direction in directions:
-            ##########################################################################################
-            if direction[1]== "right":
-                
-                # Check if there is a horizontal line forming to the right
-                if column < (len(matrix[0]) - length - 1):
-                    #print("Checking right")
-                    if self.check_horizontal(matrix, positions, row, column + 1, length, "right"):
-                        flag = True
-                        break
-                
-                if column < len(matrix[0]) - 1:
-                    if row <= (len(matrix) - length):
-                        #print("Checking right-down")
-                        # Check if there is a vertical line forming down
-                        if self.check_vertical(matrix, positions, row, column + 1, length, "down"):
-                            flag = True
-                            break
-                    
-                    # Check if there is a vertical line forming up
-                    if row >= length - 1:
-                        #print("Checking right-up")
-                        if self.check_vertical(matrix, positions, row, column + 1, length, "up"):
-                            flag = True
-                            break
-            
-            ##########################################################################################
-            elif direction[1] == "left":
-                # Check if there is a horizontal line forming left
-                if column >= length:
-                    #print("Checking left")
-                    if self.check_horizontal(matrix, positions, row, column - 1, length, "left"):
-                        flag = True
-                        break
-                
-                if column > 0:
-                    if row <= (len(matrix) - length):
-                        #print("Checking left down")
-                        if self.check_vertical(matrix, positions, row, column - 1, length, "down"):
-                            flag = True
-                            break
-                        
-                    # Check if there is a vertical line forming up
-                    if row >= length - 1:
-                        #print("Checking left up")
-                        if self.check_vertical(matrix, positions, row, column - 1, length, "up"):
-                            flag = True
-                            break
-            
-            ##########################################################################################
-            elif direction[1] == "down":
-                if row <= (len(matrix) - length - 1):
-                    #print("Checking down")
-                    if self.check_vertical(matrix, positions, row + 1, column, length, "down"):
-                        flag = True
-                        break
-                
-                if row < len(matrix) - 1:
-                    if column >= length - 1:
-                        #print("Checking down left")
-                        if self.check_horizontal(matrix, positions, row + 1, column, length, "left"):
-                            flag = True
-                            break
-                        
-                    if column <= len(matrix[0]) - length:
-                        #print("Checking down right")
-                        if self.check_horizontal(matrix, positions, row + 1, column, length, "right"):
-                            flag = True
-                            break
-            
-            ##########################################################################################
-            elif direction[1]  == "up":
-                if row >= length:
-                    #print("Checking up")
-                    if self.check_vertical(matrix, positions, row - 1, column, length, "up"):
-                        flag = True
-                        break
-                
-                if row > 0:
-                    if column >= length - 1:
-                        #print("Checking up-left")
-                        if self.check_horizontal(matrix, positions, row - 1, column, length, "left"):
-                            flag = True
-                            break
-                        
-                    if column <= len(matrix[0]) - length:
-                        #print("Checking up-right")
-                        if self.check_horizontal(matrix, positions, row - 1, column, length, "right"):
-                            flag = True
-                            break
-        
-        if flag:
-            return direction
-        
-        return False
-    
     
     
     def start(self, matrix):
-        
-        #print(f"Score is: {self.score}")
-        figures = [['line', 5], ["line", 4], ["line", 3]]
-        directions = [["vertical", "down"], ["vertical", "up"], ["horizontal", "left"], ["horizontal", "right"]]
+        #figures = [['line', 5], ["line", 4], ["line", 3]]
+        #directions = [["vertical", "down"], ["vertical", "up"], ["horizontal", "left"], ["horizontal", "right"]]
         counter = 0
+        try:
+            direction, positions = self.check_formations(matrix)
+            if direction:
+                counter += 1
+                new_matrix = self.move_candy(matrix, positions, direction[0], direction[1])
+                new_score, n_matrix = check_random_matrix(new_matrix)
+                matrix = n_matrix[:]
+                return True, new_score, matrix, counter
+        except Exception as e:
+            print(e)
+            print("\nNo possible moves:")
+            show_matrix(matrix)
         
-        for i in range(len(matrix)):
-            #print("###################################################################")
-            for j in range(len(matrix[0])):
-                
-                # Move the candy in every direction and see if we have a figure
-                for figure in figures:
-                    try:
-                        positions = (i, j)
-                        directions = self.check_formation(matrix, figure, positions)
-                        #print("\n")
-                        if directions:
-                            counter += 1
-                            new_matrix = self.move_candy(matrix, positions, directions[0], directions[1])
-                            #print(f"Moved element [{i}][{j}] in {directions[0]}-{directions[1]}")
-                            #show_matrix(new_matrix)
-                            new_score, n_matrix = check_random_matrix(new_matrix, self.score)
-                            matrix = n_matrix[:]
-                            return True, new_score, matrix, counter
-                    except Exception as e:
-                        print(e)
-                        continue
-        
-        print("\nNo possible moves:")
-        show_matrix(matrix)
-        return False
-    
+        return False    

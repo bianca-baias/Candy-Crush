@@ -26,7 +26,7 @@ def prepare_matrix(dimension):
     play.show_matrix(matrix)
     
     # Check if we already have some figure line/L/T in the matrix newly created
-    extra_score, new_matrix =  play.check_random_matrix(matrix, score)
+    extra_score, new_matrix =  play.check_random_matrix(matrix)
     score += extra_score
     matrix = new_matrix[:]
     return score, matrix
@@ -34,8 +34,8 @@ def prepare_matrix(dimension):
 
 
 def main():
-    dimension = 11
-    games = 10
+    dimension = 6
+    games = 1
     average_score = 0
     counter = 0
     #figures = [['line', 5], ['L'], ['T'], ['line', 4], ['line', 3]]
@@ -50,15 +50,17 @@ def main():
         print("STARTING GAME")
         
         run = True
+        round = play.PlayGame()
         while run:
-            round = play.PlayGame(score)
-            
+            #round = play.PlayGame(score)
+            print(f"Round {counter}")
+            print(f"Score {score}")
             # Play the game
             try:
                 # Try to find a figure
                 run, new_score, new_matrix, new_counter = round.start(matrix)
                 matrix = new_matrix[:]
-                score = new_score
+                score += new_score
                 counter += new_counter
                 
                 if score >= 10000:
@@ -68,6 +70,7 @@ def main():
             
             except Exception as e:
                 # If we did not find a figure, game over
+                print("Main")
                 print(e)
                 run = False
                 average_score += score
