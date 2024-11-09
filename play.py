@@ -413,15 +413,12 @@ class PlayGame:
         check_L = CheckL()
         check_T = CheckT()
         
-        print("checking line of 5")
         direction, position = check_line.check_line_5(matrix)
         
         if not direction:
-            print("checking line of 4")
             direction, position = check_line.check_line_4(matrix)
         
         if not direction:
-            print("checking line of 3")
             direction, position = check_line.check_line_3(matrix) 
         
         # if not direction:

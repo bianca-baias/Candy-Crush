@@ -34,8 +34,8 @@ def prepare_matrix(dimension):
 
 
 def main():
-    dimension = 6
-    games = 1
+    dimension = 11
+    games = 10
     average_score = 0
     counter = 0
     #figures = [['line', 5], ['L'], ['T'], ['line', 4], ['line', 3]]
@@ -53,8 +53,6 @@ def main():
         round = play.PlayGame()
         while run:
             #round = play.PlayGame(score)
-            print(f"Round {counter}")
-            print(f"Score {score}")
             # Play the game
             try:
                 # Try to find a figure
